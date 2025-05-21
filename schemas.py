@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
-from datetime import date
+from pydantic import BaseModel
+from datetime import date, datetime
 from typing import Optional
+
 
 class PatientInfoCreate(BaseModel):
     name: str
@@ -14,6 +15,7 @@ class PatientInfoCreate(BaseModel):
     emergency_contact_phone: Optional[str] = None
     blood_type: Optional[str] = None
 
+
 class PatientInfoOut(PatientInfoCreate):
     id: int
     first_visit_date: Optional[date] = None
@@ -23,3 +25,16 @@ class PatientInfoOut(PatientInfoCreate):
 
     class Config:
         from_attributes = True
+
+
+class AppointmentCreate(BaseModel):
+    patient_id: int
+
+
+class AppointmentRead(BaseModel):
+    id: int
+    patient_id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True

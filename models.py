@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, Text, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, Date, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
+from datetime import datetime
 from database import Base
 
 
@@ -34,6 +35,7 @@ class Patient(Base):
         "Prescription",
         foreign_keys=[last_prescription_id],
     )
+    appointments = relationship("Appointment", back_populates="patient")
 
 
 # Prescription, Visit 테이블도 아래와 같이 필요
@@ -64,3 +66,17 @@ class Visit(Base):
     reason = Column(Text)
 
     patient = relationship("Patient", back_populates="visits")
+
+
+class Appointment(Base):
+    __tablename__ = "appointment"
+    id = Column(Integer, primary_key=True, index=True)
+    patient_id = Column(Integer, ForeignKey("patient.id"))
+    memo = Column(Text, nullable=True)
+    script = Column(Text, nullable=True)
+    summary = Column(Text, nullable=True)
+    no_show = Column(Boolean, default=False)
+    appointment_day = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    patient = relationship("Patient", back_populates="appointments")
