@@ -29,12 +29,14 @@ class PatientInfoOut(PatientInfoCreate):
 
 class AppointmentCreate(BaseModel):
     patient_id: int
+    appointment_day = Optional[datetime] = None
 
 
 class AppointmentRead(BaseModel):
     id: int
     patient_id: int
     created_at: datetime
+    appointment_day: datetime
 
     class Config:
         orm_mode = True
