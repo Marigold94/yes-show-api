@@ -72,6 +72,7 @@ class Appointment(Base):
     __tablename__ = "appointment"
     id = Column(Integer, primary_key=True, index=True)
     patient_id = Column(Integer, ForeignKey("patient.id"))
+    name = Column(String(100), nullable=False, index=True)  # 추가된 name 필드
     memo = Column(Text, nullable=True)
     script = Column(Text, nullable=True)
     summary = Column(Text, nullable=True)

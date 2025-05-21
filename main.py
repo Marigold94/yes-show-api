@@ -39,14 +39,17 @@ def create_appointment(
         db: Session = Depends(get_db),
 ):
     # 1) patient_id 유효성 검사 (옵션)
-    exists = db.query(Appointment).join(Appointment.patient).filter(
-        Appointment.patient_id == payload.patient_id).first()
-    # 여기서는 단순히 patient가 있는지만 확인하고 넘어가도 좋습니다.
-    # 하지만 foreign key 제약이 있기 때문에 DB 삽입 시 에러가 터지면 400으로 변환해도 됩니다.
+    patient = db.query(Patient).filter(Patient.id == payload.patient_id).first()
+    if not patient:
+        raise HTTPException(status_code=404, detail="등록되지 않은 환자입니다.")
 
     # 2) 새 Appointment 객체 생성
     new_appt = Appointment(
         patient_id=payload.patient_id,
+        name=payload.name,  # 이름 설정
+        memo=payload.memo,
+        script=payload.script,
+        summary=payload.summary,
         appointment_day=payload.appointment_day or datetime.utcnow(),
         created_at=datetime.utcnow()
     )
@@ -55,3 +58,25 @@ def create_appointment(
     db.refresh(new_appt)
 
     return new_appt
+
+
+@app.get("/appointments/by-name/{name}", response_model=list[AppointmentRead])
+def get_appointments_by_name(name: str, db: Session = Depends(get_db)):
+    """이름으로 예약 검색"""
+    appointments = db.query(Appointment).filter(Appointment.name == name).all()
+    if not appointments:
+        raise HTTPException(status_code=404, detail="해당 이름의 예약을 찾을 수 없습니다.")
+    return appointments
+
+
+@app.get("/appointments/by-name", response_model=list[AppointmentRead])
+def search_appointments_by_name(name: str, db: Session = Depends(get_db)):
+    """이름 일부로 예약 검색 (부분 일치)"""
+    # 이름에 검색어가 포함된 모든 예약 검색 (대소문자 구분 없음)
+    appointments = db.query(Appointment).filter(
+        Appointment.name.ilike(f"%{name}%")
+    ).all()
+
+    if not appointments:
+        raise HTTPException(status_code=404, detail="검색 조건에 맞는 예약을 찾을 수 없습니다.")
+    return appointments

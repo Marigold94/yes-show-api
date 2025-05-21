@@ -29,14 +29,23 @@ class PatientInfoOut(PatientInfoCreate):
 
 class AppointmentCreate(BaseModel):
     patient_id: int
+    name: str  # 필수 필드로 추가
     appointment_day: Optional[datetime] = None
+    memo: Optional[str] = None
+    script: Optional[str] = None
+    summary: Optional[str] = None
 
 
 class AppointmentRead(BaseModel):
     id: int
     patient_id: int
-    created_at: datetime
+    name: str
+    memo: Optional[str] = None
+    script: Optional[str] = None
+    summary: Optional[str] = None
+    no_show: bool
     appointment_day: datetime
+    created_at: datetime
 
     class Config:
         from_attributes = True  # Updated from orm_mode = True for Pydantic v2
