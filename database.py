@@ -3,7 +3,7 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 import os
 
 # PostgreSQL 연결 (링크는 환경변수 설정)
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:0904@localhost:5432/yes_show")
+DATABASE_URL = os.getenv("DATABASE_URL", None)
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
