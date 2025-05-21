@@ -29,7 +29,7 @@ class PatientInfoOut(PatientInfoCreate):
 
 class AppointmentCreate(BaseModel):
     patient_id: int
-    appointment_day = Optional[datetime] = None
+    appointment_day: Optional[datetime] = None
 
 
 class AppointmentRead(BaseModel):
@@ -39,4 +39,4 @@ class AppointmentRead(BaseModel):
     appointment_day: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # Updated from orm_mode = True for Pydantic v2
