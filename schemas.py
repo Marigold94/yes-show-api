@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import date, datetime
-from typing import Optional
+from typing import Optional, List
 
 
 class PatientInfoCreate(BaseModel):
@@ -14,6 +14,11 @@ class PatientInfoCreate(BaseModel):
     emergency_contact_name: Optional[str] = None
     emergency_contact_phone: Optional[str] = None
     blood_type: Optional[str] = None
+
+
+# 메모 업데이트용 스키마
+class MemoUpdate(BaseModel):
+    memo: str
 
 
 class PatientInfoOut(PatientInfoCreate):
@@ -49,3 +54,28 @@ class AppointmentRead(BaseModel):
 
     class Config:
         from_attributes = True  # Updated from orm_mode = True for Pydantic v2
+
+
+class ScriptResponse(BaseModel):
+    script: Optional[str] = None
+
+
+class SummaryResponse(BaseModel):
+    summary: Optional[str] = None
+
+
+class MemoResponse(BaseModel):
+    memo: Optional[str] = None
+
+
+# 리스트 응답 모델 추가
+class ScriptResponseList(BaseModel):
+    items: List[ScriptResponse]
+
+
+class SummaryResponseList(BaseModel):
+    items: List[SummaryResponse]
+
+
+class MemoResponseList(BaseModel):
+    items: List[MemoResponse]
